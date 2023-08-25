@@ -8,21 +8,23 @@ function Home() {
   useEffect(()=>{
     if(iframeRef && iframeRef.current){
       iframeRef.current.onload = ()=>{
-        setElementTree(iframeRef.current?.contentWindow?.document?.body?.querySelectorAll('div#root')[0]?.children);
+        const element  = iframeRef.current?.contentWindow?.document?.body?.querySelectorAll('div#root')[0]?.children[0];
+        const node = element[Object.keys(element).find((key)=>key.startsWith('__reactContainer$') || key.startsWith('__reactFiber$'))];
+        setElementTree(node);
       }
     }
     return ()=>{};
   },[iframeRef]);
 
   useEffect(()=>{
-    return ()=>{};
-  },[elementsTree]);
+   // console.log(elementsTree)
+  },[elementsTree])
 
   return (
     <div className="w-full min-h-screen flex gap-10">
       <aside className="w-72 bg-slate-900">
         {elementsTree ? 
-        <TreeNode node={elementsTree[0]} depth={1}/> : 
+        <TreeNode node={elementsTree} depth={1}/> : 
         <p className="text-white">loading</p>}
       </aside>
       <iframe
